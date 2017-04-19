@@ -29,7 +29,7 @@ public class GroupVariant {
         this.variantName = variantName;
     }
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     public ProductGroup getGroup() {
         return group;
     }

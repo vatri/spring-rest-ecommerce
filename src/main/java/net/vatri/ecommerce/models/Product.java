@@ -47,7 +47,7 @@ public class Product {
         this.price = price;
     }
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "group_id")
     public ProductGroup getGroup() {
         return group;

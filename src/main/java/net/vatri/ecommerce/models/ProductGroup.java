@@ -16,7 +16,8 @@ public class ProductGroup {
 
     private List<GroupVariant> groupVariants = new ArrayList<>();
 
-    @OneToMany(mappedBy = "group", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+//    @OneToMany(mappedBy = "group", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     public List<GroupVariant> getGroupVariants() {
         return groupVariants;
     }
