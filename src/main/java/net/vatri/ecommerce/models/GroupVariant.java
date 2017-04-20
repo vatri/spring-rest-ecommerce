@@ -1,5 +1,8 @@
 package net.vatri.ecommerce.models;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
 
 @Entity
@@ -30,6 +33,9 @@ public class GroupVariant {
     }
 
     @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "group_id")
+    @JsonBackReference
+    @JsonIgnore
     public ProductGroup getGroup() {
         return group;
     }

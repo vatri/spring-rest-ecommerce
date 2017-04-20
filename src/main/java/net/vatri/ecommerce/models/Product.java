@@ -11,6 +11,7 @@ public class Product {
     private String created;
     private String price;
     private ProductGroup group;
+//    private User user;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

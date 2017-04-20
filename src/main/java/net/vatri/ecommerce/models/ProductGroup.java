@@ -1,5 +1,8 @@
 package net.vatri.ecommerce.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -14,17 +17,7 @@ public class ProductGroup {
     @Temporal(TemporalType.TIMESTAMP)
     private String created;//Todo - Date type...
 
-    private List<GroupVariant> groupVariants = new ArrayList<>();
-
-//    @OneToMany(mappedBy = "group", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    public List<GroupVariant> getGroupVariants() {
-        return groupVariants;
-    }
-
-    public void setGroupVariants(List<GroupVariant> groupVariants) {
-        this.groupVariants = groupVariants;
-    }
+    private List<GroupVariant> groupVariants;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -59,6 +52,17 @@ public class ProductGroup {
 
     public void setCreated(String created) {
         this.created = created;
+    }
+
+    @OneToMany(mappedBy = "group", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JsonManagedReference
+    @JsonIgnore
+    public List<GroupVariant> getGroupVariants() {
+        return groupVariants;
+    }
+
+    public void setGroupVariants(List<GroupVariant> groupVariants) {
+        this.groupVariants = groupVariants;
     }
 
     public String toString() {
