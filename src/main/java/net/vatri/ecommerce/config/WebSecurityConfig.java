@@ -1,6 +1,9 @@
 package net.vatri.ecommerce.config;
 
+import net.vatri.ecommerce.security.AuthenticationFailureHandler;
+import net.vatri.ecommerce.security.AuthenticationSuccessHandler;
 import net.vatri.ecommerce.security.TokenAuthenticationFilter;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -24,6 +27,12 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         return new TokenAuthenticationFilter();
     }
 
+    @Autowired
+    private AuthenticationSuccessHandler authenticationSuccessHandler;
+
+    @Autowired
+    private AuthenticationFailureHandler authenticationFailureHandler;
+
     @Override
     protected void configure(HttpSecurity http) throws Exception{
 
@@ -37,13 +46,13 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 //               .httpBasic().disable();
 
                 .anyRequest().authenticated()
-//                .and().formLogin().successHandler(authenticationSuccessHandler)
-
+                .antMatchers("/user/**").permitAll()
+                .and().formLogin().successHandler(authenticationSuccessHandler)
+                .failureHandler(authenticationFailureHandler)
                 // From https://github.com/bfwg/springboot-jwt-starter
 
 
 
-                .antMatchers("/user/**").permitAll()
 
 //                .anyRequest().fullyAuthenticated()
 //                .and().httpBasic()

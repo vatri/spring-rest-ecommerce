@@ -1,10 +1,12 @@
 package net.vatri.ecommerce.models;
 
+import org.springframework.security.core.userdetails.UserDetails;
+
 import javax.persistence.*;
 
 @Entity
 @Table(name = "users")
-public class User {
+public class User{
 
     private Integer id;
     private String name;

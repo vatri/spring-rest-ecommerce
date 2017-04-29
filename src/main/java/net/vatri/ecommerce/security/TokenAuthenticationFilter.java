@@ -23,8 +23,8 @@ public class TokenAuthenticationFilter extends OncePerRequestFilter {
     @Value("${jwt.header}")
     private String AUTH_HEADER;
 
-    @Value("${jwt.cookie}")
-    private String AUTH_COOKIE;
+//    @Value("${jwt.cookie}")
+//    private String AUTH_COOKIE;
 
     @Autowired
     TokenHelper tokenHelper;
@@ -34,10 +34,10 @@ public class TokenAuthenticationFilter extends OncePerRequestFilter {
 
     private String getToken( HttpServletRequest request ) {
 
-        Cookie authCookie = getCookieValueByName( request, AUTH_COOKIE );
-        if ( authCookie != null ) {
-            return authCookie.getValue();
-        }
+//        Cookie authCookie = getCookieValueByName( request, AUTH_COOKIE );
+//        if ( authCookie != null ) {
+//            return authCookie.getValue();
+//        }
 
         String authHeader = request.getHeader(AUTH_HEADER);
         if ( authHeader != null && authHeader.startsWith("Bearer ")) {
@@ -47,17 +47,17 @@ public class TokenAuthenticationFilter extends OncePerRequestFilter {
         return null;
     }
 
-    protected Cookie getCookieValueByName(HttpServletRequest request, String name) {
-        if (request.getCookies() == null) {
-            return null;
-        }
-        for (int i = 0; i < request.getCookies().length; i++) {
-            if (request.getCookies()[i].getName().equals(name)) {
-                return request.getCookies()[i];
-            }
-        }
-        return null;
-    }
+//    protected Cookie getCookieValueByName(HttpServletRequest request, String name) {
+//        if (request.getCookies() == null) {
+//            return null;
+//        }
+//        for (int i = 0; i < request.getCookies().length; i++) {
+//            if (request.getCookies()[i].getName().equals(name)) {
+//                return request.getCookies()[i];
+//            }
+//        }
+//        return null;
+//    }
 
     @Override
     public void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain) throws IOException, ServletException {
