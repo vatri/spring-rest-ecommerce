@@ -22,8 +22,8 @@ public class AuthenticationSuccessHandler extends SimpleUrlAuthenticationSuccess
     @Value("${jwt.expires_in}")
     private int EXPIRES_IN;
 
-    @Value("${jwt.cookie}")
-    private String TOKEN_COOKIE;
+//    @Value("${jwt.cookie}")
+//    private String TOKEN_COOKIE;
 
 //    @Value("${app.user_cookie}")
 //    private String USER_COOKIE;
