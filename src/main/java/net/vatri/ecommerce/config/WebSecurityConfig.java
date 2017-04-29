@@ -1,11 +1,13 @@
 package net.vatri.ecommerce.config;
 
+import net.vatri.ecommerce.security.TokenAuthenticationFilter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 
 
 @Configuration
@@ -17,11 +19,34 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         return new BCryptPasswordEncoder();
     }
 
+    @Bean
+    public TokenAuthenticationFilter jwtAuthenticationTokenFilter() throws Exception {
+        return new TokenAuthenticationFilter();
+    }
+
     @Override
     protected void configure(HttpSecurity http) throws Exception{
 
-        http.authorizeRequests().anyRequest().fullyAuthenticated()
-                .and().httpBasic()
+        http
+//                .exceptionHandling().authenticationEntryPoint( restAuthenticationEntryPoint ).and()
+                .addFilterBefore(jwtAuthenticationTokenFilter(), BasicAuthenticationFilter.class)
+
+                .authorizeRequests()
+//                .antMatchers("public/**").permitAll() << For public JSP pages...
+//                .anyRequest().hasRole("admin")
+//               .httpBasic().disable();
+
+                .anyRequest().authenticated()
+//                .and().formLogin().successHandler(authenticationSuccessHandler)
+
+                // From https://github.com/bfwg/springboot-jwt-starter
+
+
+
+                .antMatchers("/user/**").permitAll()
+
+//                .anyRequest().fullyAuthenticated()
+//                .and().httpBasic()
                 .and().csrf().disable();
 
     }

@@ -23,6 +23,9 @@ public class UserDetailServiceImpl implements UserDetailsService {
     public UserDetails loadUserByUsername(String s) throws UsernameNotFoundException {
         User user = userRepository.findByEmail(s);
 
+        if( user == null){
+            throw new UsernameNotFoundException("No user found. Username tried: " + s);
+        }
         Set<GrantedAuthority> grantedAuthorities = new HashSet<GrantedAuthority>();
         grantedAuthorities.add(new SimpleGrantedAuthority("admin"));
 
