@@ -41,7 +41,13 @@ public class GroupController {
 
     @RequestMapping(method = RequestMethod.POST)
     public ProductGroup create(@RequestBody ProductGroup group){
-        return  ecommerceService.saveGroup(group);
+
+        // We must do this manually for Hibernate.
+        if( group.getGroupVariants() != null ) {
+            group.getGroupVariants().forEach(gv -> gv.setGroup(group));
+        }
+
+        return ecommerceService.saveGroup(group);
     }
 
     // Todo: add delete method

@@ -18,7 +18,6 @@ public class EcommerceService {
     @Autowired
     GroupRepository groupRepository;
 
-
     public List<Product> getProducts(){
         return productRepository.findAll();
     }
