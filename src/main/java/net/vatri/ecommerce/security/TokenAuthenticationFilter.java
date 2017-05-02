@@ -73,15 +73,15 @@ public class TokenAuthenticationFilter extends OncePerRequestFilter {
                 TokenBasedAuthentication authentication = new TokenBasedAuthentication( userDetails );
                 authentication.setToken( authToken );
                 SecurityContextHolder.getContext().setAuthentication( authentication );
-                chain.doFilter(request, response);
             } else {
                 System.out.println("Username from token can't be found in DB.");
+                response.sendError(HttpServletResponse.SC_FORBIDDEN);
             }
         } else {
             System.out.println("No Bearer token provided.");
-            SecurityContextHolder.getContext().setAuthentication( new AnonAuthentication() );
+            response.sendError(HttpServletResponse.SC_FORBIDDEN);
         }
-
+        chain.doFilter(request, response);
     }
 
 }
