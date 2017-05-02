@@ -46,7 +46,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 //               .httpBasic().disable();
 
                 .anyRequest().authenticated()
-                .antMatchers("/user/**").permitAll()
+//                .antMatchers("/user/**").permitAll()
                 .and().formLogin().successHandler(authenticationSuccessHandler)
                 .failureHandler(authenticationFailureHandler)
                 // From https://github.com/bfwg/springboot-jwt-starter
