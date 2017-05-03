@@ -10,6 +10,7 @@ public class Product {
     private String name;
     private String created;
     private String price;
+    private String description;
     private ProductGroup group;
 //    private User user;
 
@@ -46,6 +47,14 @@ public class Product {
 
     public void setPrice(String price) {
         this.price = price;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 
     @ManyToOne(fetch = FetchType.EAGER)

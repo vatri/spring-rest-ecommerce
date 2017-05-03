@@ -35,6 +35,7 @@ public class ProductController {
 
         updatedProduct.setName(product.getName());
         updatedProduct.setPrice(product.getPrice());
+        updatedProduct.setDescription(product.getDescription());
 
         return ecommerceService.saveProduct(updatedProduct);
     }
