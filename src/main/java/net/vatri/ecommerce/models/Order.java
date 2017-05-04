@@ -1,12 +1,15 @@
 package net.vatri.ecommerce.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 import javax.persistence.*;
 import java.util.List;
 
 @Entity
 @Table(name = "orders")
 public class Order {
-    private Integer id;
+    private long id;
     private String name;
     private String address;
     private String city;
@@ -21,11 +24,11 @@ public class Order {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    public Integer getId() {
+    public long getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(long id) {
         this.id = id;
     }
 
@@ -103,6 +106,8 @@ public class Order {
     }
 
     @OneToMany(mappedBy = "order", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @JsonManagedReference
+//    @JsonIgnore
     public List<OrderItem> getItems() {
         return items;
     }

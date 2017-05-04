@@ -35,6 +35,12 @@ public class GroupController {
 
         updatedGroup.setGroupName(group.getGroupName());
         updatedGroup.setPrice(group.getPrice());
+        updatedGroup.setGroupVariants(group.getGroupVariants());
+
+        // We must do this manually b/c of Hibernate.
+        if(updatedGroup.getGroupVariants() !=null ){
+            updatedGroup.getGroupVariants().forEach(gv -> gv.setGroup(updatedGroup));
+        }
 
         return ecommerceService.saveGroup(updatedGroup);
     }
@@ -42,7 +48,7 @@ public class GroupController {
     @RequestMapping(method = RequestMethod.POST)
     public ProductGroup create(@RequestBody ProductGroup group){
 
-        // We must do this manually for Hibernate.
+        // We must do this manually b/c of Hibernate.
         if( group.getGroupVariants() != null ) {
             group.getGroupVariants().forEach(gv -> gv.setGroup(group));
         }

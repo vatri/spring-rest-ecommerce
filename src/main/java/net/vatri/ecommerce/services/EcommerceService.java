@@ -1,9 +1,11 @@
 package net.vatri.ecommerce.services;
 
+import net.vatri.ecommerce.models.Order;
 import net.vatri.ecommerce.models.Product;
 import net.vatri.ecommerce.models.ProductGroup;
 import net.vatri.ecommerce.models.ProductImage;
 import net.vatri.ecommerce.repositories.GroupRepository;
+import net.vatri.ecommerce.repositories.OrderRepository;
 import net.vatri.ecommerce.repositories.ProductRepository;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
@@ -23,6 +25,9 @@ public class EcommerceService {
 
     @Autowired
     GroupRepository groupRepository;
+
+    @Autowired
+    OrderRepository orderRepository;
 
     @Autowired
     private SessionFactory sessionFactory;
@@ -72,4 +77,14 @@ public class EcommerceService {
         return groupRepository.save(group);
     }
 
+    /* ORDERS */
+    public List<Order> getOrders(){
+        return orderRepository.findAll();
+    }
+    public Order getOrder(long id){
+        return orderRepository.findOne(id);
+    }
+    public Order saveOrder(Order order){
+        return orderRepository.save(order);
+    }
 }

@@ -1,5 +1,6 @@
 package net.vatri.ecommerce.models;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import net.vatri.ecommerce.models.Product;
 
 import javax.persistence.*;
@@ -35,6 +36,7 @@ public class OrderItem {
 
     @ManyToOne
     @JoinColumn(name = "order_id")
+    @JsonBackReference
     public Order getOrder() {
         return order;
     }
@@ -45,6 +47,7 @@ public class OrderItem {
 
     @ManyToOne
     @JoinColumn(name = "product_id")
+    @JsonBackReference(value = "product_reference")
     public Product getProduct() {
         return product;
     }
