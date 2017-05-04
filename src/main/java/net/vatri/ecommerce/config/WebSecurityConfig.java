@@ -40,25 +40,17 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 //                .exceptionHandling().authenticationEntryPoint( restAuthenticationEntryPoint ).and()
 //                .sessionManagement().sessionCreationPolicy( SessionCreationPolicy.STATELESS ).and()
                 .addFilterBefore(jwtAuthenticationTokenFilter(), BasicAuthenticationFilter.class)
-
                 .authorizeRequests()
-//                .antMatchers("public/**").permitAll() << For public JSP pages...
-//                .anyRequest().hasRole("admin")
-//               .httpBasic().disable();
-
+                .antMatchers("/product/image/**").permitAll()
                 .anyRequest().authenticated()
-//                .antMatchers("/user/**").permitAll()
+//                .anyRequest().hasRole("admin") << Works with ROLE entities while we have SimpleGrantedAuthority...
+                .anyRequest().hasAuthority("admin")
+
+//               .httpBasic().disable();
                 .and().formLogin().successHandler(authenticationSuccessHandler)
                 .failureHandler(authenticationFailureHandler)
 
                 // From https://github.com/bfwg/springboot-jwt-starter
-
-
-
-
-//                .anyRequest().fullyAuthenticated()
-//                .and().httpBasic()
                 .and().csrf().disable();
-
     }
 }

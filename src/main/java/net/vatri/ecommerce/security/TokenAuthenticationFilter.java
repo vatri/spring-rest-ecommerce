@@ -65,27 +65,29 @@ public class TokenAuthenticationFilter extends OncePerRequestFilter {
         String error = "";
         String authToken = getToken( request );
         if (authToken != null) {
-            // get username from token
+
+            // Get username from token
             String username = tokenHelper.getUsernameFromToken( authToken );
             if ( username != null ) {
-                // get user
+
+                // Get user
                 UserDetails userDetails = userDetailServiceImpl.loadUserByUsername( username );
-                // create authentication
+
+                // Create authentication
                 TokenBasedAuthentication authentication = new TokenBasedAuthentication( userDetails );
                 authentication.setToken( authToken );
                 SecurityContextHolder.getContext().setAuthentication( authentication );
-                chain.doFilter(request, response);
             } else {
                 error = "Username from token can't be found in DB.";
             }
         } else {
             error = "No Bearer token provided.";
         }
-        if(! error.equals("")){
-            response.sendError(HttpServletResponse.SC_FORBIDDEN, "Authentication failed");
+        if( ! error.equals("")){
             System.out.println("ERROR: " + error);
             SecurityContextHolder.getContext().setAuthentication( new AnonAuthentication() );//prevent show login form...
         }
+        chain.doFilter(request, response);
     }
 
 }

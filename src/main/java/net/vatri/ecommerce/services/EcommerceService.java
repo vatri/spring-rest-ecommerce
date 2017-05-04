@@ -2,11 +2,17 @@ package net.vatri.ecommerce.services;
 
 import net.vatri.ecommerce.models.Product;
 import net.vatri.ecommerce.models.ProductGroup;
+import net.vatri.ecommerce.models.ProductImage;
 import net.vatri.ecommerce.repositories.GroupRepository;
 import net.vatri.ecommerce.repositories.ProductRepository;
+import org.hibernate.HibernateException;
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.util.List;
 
 @Service
@@ -18,6 +24,11 @@ public class EcommerceService {
     @Autowired
     GroupRepository groupRepository;
 
+    @Autowired
+    private SessionFactory sessionFactory;
+
+
+    /* PRODUCT */
     public List<Product> getProducts(){
         return productRepository.findAll();
     }
@@ -26,6 +37,28 @@ public class EcommerceService {
     }
     public Product saveProduct(Product product){
         return productRepository.save(product);
+    }
+
+    public String addProductImage(final String productId, final String filename){
+
+        Session session = sessionFactory.openSession();
+        session.beginTransaction();
+
+        ProductImage image = new ProductImage();
+        image.setProductId(Long.parseLong(productId));
+        image.setPath(filename);
+
+        try {
+            String res = session.save(image).toString();
+            session.getTransaction().commit();
+            return res;
+        } catch (HibernateException e) {
+            System.out.print(e.getMessage());
+            session.getTransaction().rollback();
+        } finally {
+            session.close();
+        }
+        return "";
     }
 
     /* GROUPS */
