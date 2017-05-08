@@ -96,7 +96,7 @@ public class ProductController {
 
         // Relative path to the rootLocation in storageService
         String path = "/product-images/" + id;
-        final String filename = storageService.store(file, path);
+        String filename = storageService.store(file, path);
 
         return ecommerceService.addProductImage(id, filename);
     }

@@ -22,7 +22,7 @@ public class OrderController {
     @PostMapping
     public Order create(@RequestBody Order order){
 
-        // Required by Hibernate ORM
+        // Required by Hibernate ORM to save properly
         if(order.getItems() !=null){
             order.getItems().forEach(item -> item.setOrder(order));
         }
@@ -31,7 +31,7 @@ public class OrderController {
 
     @RequestMapping("/{id}")
     public Order view(@PathVariable("id") long id){
-        return  ecommerceService.getOrder(id);
+        return ecommerceService.getOrder(id);
     }
 
     @RequestMapping(value = "/{id}", method = RequestMethod.POST)
