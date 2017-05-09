@@ -42,6 +42,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .addFilterBefore(jwtAuthenticationTokenFilter(), BasicAuthenticationFilter.class)
                 .authorizeRequests()
                 .antMatchers("/product/image/**").permitAll()
+                .antMatchers("/cart/**").permitAll()
                 .anyRequest().authenticated()
 //                .anyRequest().hasRole("admin") << Works with ROLE entities while we have SimpleGrantedAuthority...
                 .anyRequest().hasAuthority("admin")

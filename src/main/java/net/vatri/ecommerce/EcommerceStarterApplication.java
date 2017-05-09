@@ -2,12 +2,14 @@ package net.vatri.ecommerce;
 
 import net.vatri.ecommerce.storage.StorageProperties;
 import net.vatri.ecommerce.storage.StorageService;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.orm.jpa.vendor.HibernateJpaSessionFactoryBean;
+import redis.clients.jedis.Jedis;
 
 @SpringBootApplication
 @EnableConfigurationProperties(StorageProperties.class)
@@ -28,5 +30,15 @@ public class EcommerceStarterApplication{
     @Bean
     public HibernateJpaSessionFactoryBean sessionFactory() {
         return new HibernateJpaSessionFactoryBean();
+    }
+
+
+    @Value("${redis.host}")
+    private String redisHost;
+    @Value("${redis.port}")
+    private int redisPort;
+    @Bean
+    public Jedis redisCli(){
+	    return new Jedis(redisHost, redisPort);
     }
 }
