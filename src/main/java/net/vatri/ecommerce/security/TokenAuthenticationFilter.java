@@ -81,10 +81,10 @@ public class TokenAuthenticationFilter extends OncePerRequestFilter {
                 error = "Username from token can't be found in DB.";
             }
         } else {
-            error = "No Bearer token provided.";
+            error = "Authentication failed - no Bearer token provided.";
         }
         if( ! error.equals("")){
-            System.out.println("ERROR: " + error);
+            System.out.println(error);
             SecurityContextHolder.getContext().setAuthentication( new AnonAuthentication() );//prevent show login form...
         }
         chain.doFilter(request, response);
