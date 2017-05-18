@@ -6,6 +6,7 @@ import net.vatri.ecommerce.security.TokenAuthenticationFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
@@ -42,7 +43,10 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .addFilterBefore(jwtAuthenticationTokenFilter(), BasicAuthenticationFilter.class)
                 .authorizeRequests()
                 .antMatchers("/product/image/**").permitAll()
+                .antMatchers(HttpMethod.GET, "/product/**").permitAll()
+                .antMatchers(HttpMethod.GET, "/group/**").permitAll()
                 .antMatchers("/cart/**").permitAll()
+
                 .anyRequest().authenticated()
 //                .anyRequest().hasRole("admin") << Works with ROLE entities while we have SimpleGrantedAuthority...
                 .anyRequest().hasAuthority("admin")

@@ -14,17 +14,17 @@ public class GroupController {
     @Autowired
     EcommerceService ecommerceService;
 
-    @RequestMapping(method = RequestMethod.GET)
+    @GetMapping
     public List<ProductGroup> index() {
         return ecommerceService.getGroups();
     }
 
-    @RequestMapping("/{id}")
+    @GetMapping("/{id}")
     public ProductGroup view(@PathVariable("id") long id){
         return ecommerceService.getGroup(id);
     }
 
-    @RequestMapping(value = "/{id}", method = RequestMethod.POST)
+    @PostMapping(value = "/{id}")
     public ProductGroup edit(@PathVariable(value = "id", required = false) long id, @RequestBody ProductGroup group){
 
         ProductGroup updatedGroup = ecommerceService.getGroup(id);
@@ -45,7 +45,7 @@ public class GroupController {
         return ecommerceService.saveGroup(updatedGroup);
     }
 
-    @RequestMapping(method = RequestMethod.POST)
+    @PostMapping
     public ProductGroup create(@RequestBody ProductGroup group){
 
         // We must do this manually b/c of Hibernate.

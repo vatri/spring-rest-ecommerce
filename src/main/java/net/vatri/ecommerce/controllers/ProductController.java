@@ -29,17 +29,17 @@ public class ProductController {
     @Autowired
     private SessionFactory sessionFactory;
 
-    @RequestMapping(method = RequestMethod.GET)
+    @GetMapping
     public List<Product> index() {
         return ecommerceService.getProducts();
     }
 
-    @RequestMapping("/{id}")
+    @GetMapping("/{id}")
     public Product view(@PathVariable("id") long id){
         return ecommerceService.getProduct(id);
     }
 
-    @RequestMapping(value = "/{id}", method = RequestMethod.POST)
+    @PostMapping(value = "/{id}")
     public Product edit(@PathVariable("id") long id, @RequestBody Product product){
 
         Product updatedProduct = ecommerceService.getProduct(id);
@@ -55,7 +55,7 @@ public class ProductController {
         return ecommerceService.saveProduct(updatedProduct);
     }
 
-    @RequestMapping("/{id}/images")
+    @GetMapping("/{id}/images")
     public List<ProductImage> viewImages(@PathVariable("id") String productId){
         Session session = sessionFactory.openSession();
         List<ProductImage> list = session.createQuery("FROM ProductImage WHERE product_id = :product_id")
