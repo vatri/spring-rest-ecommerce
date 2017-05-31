@@ -18,6 +18,11 @@ public class ProductGroup {
 
     private List<GroupVariant> groupVariants;
 
+    public ProductGroup(String id){
+        this.id = Long.parseLong(id);
+    }
+
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     public Long getId() {

@@ -9,10 +9,13 @@ import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.Validator;
+import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.core.io.Resource;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.validation.Valid;
 import java.io.IOException;
 import java.util.List;
 
@@ -29,9 +32,21 @@ public class ProductController {
     @Autowired
     private SessionFactory sessionFactory;
 
+    @Autowired Validator productValidator;
+
+    @InitBinder
+    protected void initBinder(WebDataBinder binder){
+        binder.addValidators(productValidator);
+    }
+
     @GetMapping
     public List<Product> index() {
         return ecommerceService.getProducts();
+    }
+
+    @PostMapping
+    public Product create(@RequestBody @Valid Product product){
+        return ecommerceService.saveProduct(product);
     }
 
     @GetMapping("/{id}")
@@ -40,7 +55,7 @@ public class ProductController {
     }
 
     @PostMapping(value = "/{id}")
-    public Product edit(@PathVariable("id") long id, @RequestBody Product product){
+    public Product edit(@PathVariable("id") long id, @RequestBody @Valid Product product){
 
         Product updatedProduct = ecommerceService.getProduct(id);
 

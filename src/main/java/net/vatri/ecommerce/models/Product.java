@@ -12,6 +12,7 @@ public class Product {
     private String price;
     private String description;
     private ProductGroup group;
+    private String userId;
 //    private User user;
 
     public Product(){ }
@@ -70,6 +71,14 @@ public class Product {
 
     public void setGroup(ProductGroup group) {
         this.group = group;
+    }
+
+    public String getUserId() {
+        return userId;
+    }
+
+    public void setUserId(String userId) {
+        this.userId = userId;
     }
 
     public String toString() {

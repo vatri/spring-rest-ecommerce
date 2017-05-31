@@ -2,6 +2,7 @@ package net.vatri.ecommerce;
 
 import net.vatri.ecommerce.storage.StorageProperties;
 import net.vatri.ecommerce.storage.StorageService;
+import net.vatri.ecommerce.validators.ProductValidator;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
@@ -9,6 +10,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.orm.jpa.vendor.HibernateJpaSessionFactoryBean;
+import org.springframework.validation.Validator;
 import redis.clients.jedis.Jedis;
 
 @SpringBootApplication
@@ -32,6 +34,10 @@ public class EcommerceStarterApplication{
         return new HibernateJpaSessionFactoryBean();
     }
 
+    @Bean
+    public Validator productValidator(){
+	    return new ProductValidator();
+    }
 
     @Value("${redis.host}")
     private String redisHost;
