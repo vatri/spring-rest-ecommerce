@@ -3,8 +3,11 @@ package net.vatri.ecommerce.controllers;
 import net.vatri.ecommerce.models.ProductGroup;
 import net.vatri.ecommerce.services.EcommerceService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.validation.Validator;
+import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 
 @RestController
@@ -13,6 +16,14 @@ public class GroupController {
 
     @Autowired
     EcommerceService ecommerceService;
+
+    @Autowired
+    Validator groupValidator;
+
+    @InitBinder
+    protected void initBinder(WebDataBinder binder){
+        binder.addValidators(groupValidator);
+    }
 
     @GetMapping
     public List<ProductGroup> index() {
@@ -25,7 +36,7 @@ public class GroupController {
     }
 
     @PostMapping(value = "/{id}")
-    public ProductGroup edit(@PathVariable(value = "id", required = false) long id, @RequestBody ProductGroup group){
+    public ProductGroup edit(@PathVariable(value = "id", required = false) long id, @RequestBody @Valid ProductGroup group){
 
         ProductGroup updatedGroup = ecommerceService.getGroup(id);
 
@@ -46,7 +57,7 @@ public class GroupController {
     }
 
     @PostMapping
-    public ProductGroup create(@RequestBody ProductGroup group){
+    public ProductGroup create(@RequestBody @Valid ProductGroup group){
 
         // We must do this manually b/c of Hibernate.
         if( group.getGroupVariants() != null ) {

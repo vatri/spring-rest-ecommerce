@@ -2,6 +2,7 @@ package net.vatri.ecommerce;
 
 import net.vatri.ecommerce.storage.StorageProperties;
 import net.vatri.ecommerce.storage.StorageService;
+import net.vatri.ecommerce.validators.GroupValidator;
 import net.vatri.ecommerce.validators.ProductValidator;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
@@ -37,6 +38,10 @@ public class EcommerceStarterApplication{
     @Bean
     public Validator productValidator(){
 	    return new ProductValidator();
+    }
+    @Bean
+    public Validator groupValidator(){
+        return new GroupValidator();
     }
 
     @Value("${redis.host}")

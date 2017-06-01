@@ -18,6 +18,10 @@ public class ProductGroup {
 
     private List<GroupVariant> groupVariants;
 
+    public ProductGroup(){
+
+    }
+
     public ProductGroup(String id){
         this.id = Long.parseLong(id);
     }
