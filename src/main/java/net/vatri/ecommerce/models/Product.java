@@ -1,10 +1,9 @@
 package net.vatri.ecommerce.models;
-
 import javax.persistence.*;
 
 @Entity
 @Table(name = "products")
-public class Product {
+public class Product{
 
     private long id;
     private String name;

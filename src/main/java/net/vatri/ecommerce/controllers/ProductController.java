@@ -7,20 +7,26 @@ import net.vatri.ecommerce.storage.StorageService;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.Resource;
+import org.springframework.hateoas.Link;
+import org.springframework.hateoas.config.EnableHypermediaSupport;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.Validator;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.core.io.Resource;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
 import java.io.IOException;
 import java.util.List;
 
+import static org.springframework.hateoas.core.DummyInvocationUtils.methodOn;
+import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
+
 @RestController
 @RequestMapping("/product")
+@EnableHypermediaSupport(type = EnableHypermediaSupport.HypermediaType.HAL)
 public class ProductController {
 
     @Autowired
@@ -50,8 +56,19 @@ public class ProductController {
     }
 
     @GetMapping("/{id}")
-    public Product view(@PathVariable("id") long id){
-        return ecommerceService.getProduct(id);
+    public org.springframework.hateoas.Resource view(@PathVariable("id") long id){
+        Product p = ecommerceService.getProduct(id);
+//        p.add(linkTo(methodOn(ProductController.class)).withSelfRel());
+
+        org.springframework.hateoas.Resource res = new org.springframework.hateoas.Resource(Product.class);
+        if( res == null){
+            throw new RuntimeException("Res is null");
+        }
+//        Method m = methodOn(ProductController.class);
+//        Link link = linkTo(m).withSelfRel();
+Link link = linkTo(ProductController.class).withRel("product");
+        res.add(link);
+        return res;
     }
 
     @PostMapping(value = "/{id}")
