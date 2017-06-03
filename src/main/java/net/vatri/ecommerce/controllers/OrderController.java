@@ -3,8 +3,11 @@ package net.vatri.ecommerce.controllers;
 import net.vatri.ecommerce.models.Order;
 import net.vatri.ecommerce.services.EcommerceService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.validation.Validator;
+import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 
 @RestController
@@ -14,13 +17,21 @@ public class OrderController {
     @Autowired
     private EcommerceService ecommerceService;
 
+    @Autowired
+    Validator orderValidator;
+
+    @InitBinder
+    protected void initBinder(WebDataBinder binder){
+        binder.addValidators(orderValidator);
+    }
+
     @RequestMapping(method = RequestMethod.GET)
     public List<Order> index() {
         return ecommerceService.getOrders();
     }
 
     @PostMapping
-    public Order create(@RequestBody Order order){
+    public Order create(@RequestBody @Valid Order order){
 
         // Required by Hibernate ORM to save properly
         if(order.getItems() !=null){
@@ -35,7 +46,7 @@ public class OrderController {
     }
 
     @RequestMapping(value = "/{id}", method = RequestMethod.POST)
-    public Order edit(@PathVariable("id") long id, @RequestBody Order order){
+    public Order edit(@PathVariable("id") long id, @RequestBody @Valid Order order){
 
         Order updatedOrder = ecommerceService.getOrder(id);
 

@@ -14,12 +14,12 @@ public class GroupValidator implements Validator{
 
     @Override
     public void validate(Object o, Errors errors) {
-        ValidationUtils.rejectIfEmptyOrWhitespace(errors, "groupName", "Group name empty");
+        ValidationUtils.rejectIfEmptyOrWhitespace(errors, "groupName", "name.required");
 
         ProductGroup group = (ProductGroup) o;
 
         if( group.getGroupName().length() < 2 ){
-            errors.rejectValue("groupName", "Name must be 2 or more characters");
+            errors.rejectValue("groupName", "name.required");
         }
     }
 }

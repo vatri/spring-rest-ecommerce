@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import javax.persistence.*;
+import java.util.Date;
 import java.util.List;
 
 @Entity
@@ -18,6 +19,8 @@ public class Order {
     private String comment;
     private String totalPrice;
     private String type;
+
+    @Temporal(TemporalType.TIMESTAMP)
     private String created;//Todo - Date type...
 
     private List<OrderItem> items;
@@ -115,4 +118,10 @@ public class Order {
     public void setItems(List<OrderItem> items) {
         this.items = items;
     }
+
+    @PrePersist
+    protected void onCreate() {
+        created = new Date().toString();
+    }
+
 }
