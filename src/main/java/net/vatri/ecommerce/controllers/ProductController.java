@@ -1,5 +1,6 @@
 package net.vatri.ecommerce.controllers;
 
+import net.vatri.ecommerce.hateoas.ProductResource;
 import net.vatri.ecommerce.models.Product;
 import net.vatri.ecommerce.models.ProductImage;
 import net.vatri.ecommerce.services.EcommerceService;
@@ -8,7 +9,7 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
-import org.springframework.hateoas.Link;
+import org.springframework.hateoas.ResourceSupport;
 import org.springframework.hateoas.config.EnableHypermediaSupport;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
@@ -19,15 +20,13 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
-
-import static org.springframework.hateoas.core.DummyInvocationUtils.methodOn;
-import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
 
 @RestController
 @RequestMapping("/product")
 @EnableHypermediaSupport(type = EnableHypermediaSupport.HypermediaType.HAL)
-public class ProductController {
+public class ProductController extends CoreController{
 
     @Autowired
     private EcommerceService ecommerceService;
@@ -45,9 +44,29 @@ public class ProductController {
         binder.addValidators(productValidator);
     }
 
+    private ResourceSupport createResource(Product p){
+        ProductResource productResource = new ProductResource();
+        productResource.id = p.getId();
+        productResource.name = p.getName();
+        productResource.price = p.getPrice();
+        productResource.description = p.getDescription();
+        productResource.group = p.getGroup();
+
+        // Add HAL link
+        productResource.add(createHateoasLink(p.getId()));
+
+        return productResource;
+    }
+
     @GetMapping
-    public List<Product> index() {
-        return ecommerceService.getProducts();
+    public List<ProductResource> index() {
+        List<Product> res = ecommerceService.getProducts();
+        List<ProductResource> output = new ArrayList<ProductResource>();
+        res.forEach((p)->{
+            ProductResource pr = (ProductResource) createResource(p);
+            output.add(pr);
+        });
+        return output;
     }
 
     @PostMapping
@@ -56,19 +75,12 @@ public class ProductController {
     }
 
     @GetMapping("/{id}")
-    public org.springframework.hateoas.Resource view(@PathVariable("id") long id){
+    public ResourceSupport view(@PathVariable("id") long id){
         Product p = ecommerceService.getProduct(id);
-//        p.add(linkTo(methodOn(ProductController.class)).withSelfRel());
 
-        org.springframework.hateoas.Resource res = new org.springframework.hateoas.Resource(Product.class);
-        if( res == null){
-            throw new RuntimeException("Res is null");
-        }
-//        Method m = methodOn(ProductController.class);
-//        Link link = linkTo(m).withSelfRel();
-Link link = linkTo(ProductController.class).withRel("product");
-        res.add(link);
-        return res;
+        ProductResource productResource = (ProductResource) createResource(p);
+
+        return productResource;
     }
 
     @PostMapping(value = "/{id}")
