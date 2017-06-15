@@ -25,7 +25,6 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/product")
-@EnableHypermediaSupport(type = EnableHypermediaSupport.HypermediaType.HAL)
 public class ProductController extends CoreController{
 
     @Autowired
@@ -44,18 +43,18 @@ public class ProductController extends CoreController{
         binder.addValidators(productValidator);
     }
 
-    private ResourceSupport createResource(Product p){
-        ProductResource productResource = new ProductResource();
-        productResource.id = p.getId();
-        productResource.name = p.getName();
-        productResource.price = p.getPrice();
-        productResource.description = p.getDescription();
-        productResource.group = p.getGroup();
+    private ResourceSupport createResource(Product model){
+        ProductResource res = new ProductResource();
+        res.id = model.getId();
+        res.name = model.getName();
+        res.price = model.getPrice();
+        res.description = model.getDescription();
+        res.group = model.getGroup();
 
         // Add HAL link
-        productResource.add(createHateoasLink(p.getId()));
+        res.add(createHateoasLink(model.getId()));
 
-        return productResource;
+        return res;
     }
 
     @GetMapping
