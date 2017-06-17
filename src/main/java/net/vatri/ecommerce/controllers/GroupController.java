@@ -36,6 +36,7 @@ public class GroupController extends CoreController{
         List<GroupResource> out = new ArrayList<GroupResource>();
         list.forEach(g -> {
             GroupResource gr = new GroupResource(g);
+            gr.add(createHateoasLink(g.getId()));
             out.add(gr);
         });
 
@@ -44,7 +45,9 @@ public class GroupController extends CoreController{
 
     @GetMapping("/{id}")
     public GroupResource view(@PathVariable("id") long id){
-        return new GroupResource(ecommerceService.getGroup(id));
+        GroupResource gr = new GroupResource(ecommerceService.getGroup(id));
+        gr.add(createHateoasLink(id));
+        return gr;
     }
 
     @PostMapping(value = "/{id}")
