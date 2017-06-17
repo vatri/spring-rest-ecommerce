@@ -1,18 +1,21 @@
 package net.vatri.ecommerce.controllers;
 
+import net.vatri.ecommerce.hateoas.GroupResource;
 import net.vatri.ecommerce.models.ProductGroup;
 import net.vatri.ecommerce.services.EcommerceService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.hateoas.ResourceSupport;
 import org.springframework.validation.Validator;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
 @RequestMapping("/group")
-public class GroupController {
+public class GroupController extends CoreController{
 
     @Autowired
     EcommerceService ecommerceService;
@@ -25,14 +28,23 @@ public class GroupController {
         binder.addValidators(groupValidator);
     }
 
+
     @GetMapping
-    public List<ProductGroup> index() {
-        return ecommerceService.getGroups();
+    public List<GroupResource> index() {
+        List<ProductGroup> list = ecommerceService.getGroups();
+
+        List<GroupResource> out = new ArrayList<GroupResource>();
+        list.forEach(g -> {
+            GroupResource gr = new GroupResource(g);
+            out.add(gr);
+        });
+
+        return out;
     }
 
     @GetMapping("/{id}")
-    public ProductGroup view(@PathVariable("id") long id){
-        return ecommerceService.getGroup(id);
+    public GroupResource view(@PathVariable("id") long id){
+        return new GroupResource(ecommerceService.getGroup(id));
     }
 
     @PostMapping(value = "/{id}")

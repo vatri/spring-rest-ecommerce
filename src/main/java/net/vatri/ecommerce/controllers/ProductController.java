@@ -1,5 +1,6 @@
 package net.vatri.ecommerce.controllers;
 
+import net.vatri.ecommerce.hateoas.ProductResource;
 import net.vatri.ecommerce.models.Product;
 import net.vatri.ecommerce.models.ProductImage;
 import net.vatri.ecommerce.services.EcommerceService;
@@ -7,21 +8,24 @@ import net.vatri.ecommerce.storage.StorageService;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.Resource;
+import org.springframework.hateoas.ResourceSupport;
+import org.springframework.hateoas.config.EnableHypermediaSupport;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.Validator;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.core.io.Resource;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
 @RequestMapping("/product")
-public class ProductController {
+public class ProductController extends CoreController{
 
     @Autowired
     private EcommerceService ecommerceService;
@@ -40,8 +44,16 @@ public class ProductController {
     }
 
     @GetMapping
-    public List<Product> index() {
-        return ecommerceService.getProducts();
+    public List<ProductResource> index() {
+        List<Product> res = ecommerceService.getProducts();
+        List<ProductResource> output = new ArrayList<ProductResource>();
+        res.forEach((p)->{
+            ProductResource pr = new ProductResource(p);
+            pr.add(createHateoasLink(p.getId()));
+
+            output.add(pr);
+        });
+        return output;
     }
 
     @PostMapping
@@ -50,8 +62,13 @@ public class ProductController {
     }
 
     @GetMapping("/{id}")
-    public Product view(@PathVariable("id") long id){
-        return ecommerceService.getProduct(id);
+    public ResourceSupport view(@PathVariable("id") long id){
+        Product p = ecommerceService.getProduct(id);
+
+        ProductResource pr = new ProductResource(p);
+        pr.add(createHateoasLink(p.getId()));
+
+        return pr;
     }
 
     @PostMapping(value = "/{id}")
