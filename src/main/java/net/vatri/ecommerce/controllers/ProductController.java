@@ -43,26 +43,14 @@ public class ProductController extends CoreController{
         binder.addValidators(productValidator);
     }
 
-    private ResourceSupport createResource(Product model){
-        ProductResource res = new ProductResource();
-        res.id = model.getId();
-        res.name = model.getName();
-        res.price = model.getPrice();
-        res.description = model.getDescription();
-        res.group = model.getGroup();
-
-        // Add HAL link
-        res.add(createHateoasLink(model.getId()));
-
-        return res;
-    }
-
     @GetMapping
     public List<ProductResource> index() {
         List<Product> res = ecommerceService.getProducts();
         List<ProductResource> output = new ArrayList<ProductResource>();
         res.forEach((p)->{
-            ProductResource pr = (ProductResource) createResource(p);
+            ProductResource pr = new ProductResource(p);
+            pr.add(createHateoasLink(p.getId()));
+
             output.add(pr);
         });
         return output;
@@ -77,9 +65,10 @@ public class ProductController extends CoreController{
     public ResourceSupport view(@PathVariable("id") long id){
         Product p = ecommerceService.getProduct(id);
 
-        ProductResource productResource = (ProductResource) createResource(p);
+        ProductResource pr = new ProductResource(p);
+        pr.add(createHateoasLink(p.getId()));
 
-        return productResource;
+        return pr;
     }
 
     @PostMapping(value = "/{id}")

@@ -28,14 +28,6 @@ public class GroupController extends CoreController{
         binder.addValidators(groupValidator);
     }
 
-    private ResourceSupport createResource(ProductGroup model){
-        GroupResource res = new GroupResource();
-        res.id = model.getId();
-        res.groupName = model.getGroupName();
-        res.price = model.getPrice();
-        res.add(createHateoasLink(model.getId()));
-        return res;
-    }
 
     @GetMapping
     public List<GroupResource> index() {
@@ -43,7 +35,7 @@ public class GroupController extends CoreController{
 
         List<GroupResource> out = new ArrayList<GroupResource>();
         list.forEach(g -> {
-            GroupResource gr = (GroupResource) createResource(g);
+            GroupResource gr = new GroupResource(g);
             out.add(gr);
         });
 
@@ -52,7 +44,7 @@ public class GroupController extends CoreController{
 
     @GetMapping("/{id}")
     public GroupResource view(@PathVariable("id") long id){
-        return (GroupResource) createResource(ecommerceService.getGroup(id));
+        return new GroupResource(ecommerceService.getGroup(id));
     }
 
     @PostMapping(value = "/{id}")
