@@ -1,6 +1,8 @@
 package net.vatri.ecommerce.cart;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import net.vatri.ecommerce.cache.Cache;
+import net.vatri.ecommerce.models.OrderItem;
 import net.vatri.ecommerce.models.Product;
 import net.vatri.ecommerce.services.EcommerceService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,6 +10,7 @@ import org.springframework.stereotype.Service;
 import redis.clients.jedis.Jedis;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
@@ -15,13 +18,10 @@ import java.util.UUID;
 public class CartServiceImpl implements CartService{
 
     @Autowired
-    private Jedis redis;
-
-    @Autowired
     private EcommerceService ecommerceService;
 
     @Autowired
-    private ObjectMapper objectMapper;
+    private Cache cache;
 
     @Override
     public String createNewCart() {
@@ -30,47 +30,27 @@ public class CartServiceImpl implements CartService{
 
     @Override
     public void addProduct(String cartId, CartItem cartItem) {
-
-        String itemJson = null;
-        try {
-            itemJson = objectMapper.writeValueAsString(cartItem);
-        } catch (Exception e){
-            System.out.println(e.getMessage());
-        }
-        System.out.println("Adding item:" + itemJson);
-        redis.sadd(generateCartRedisId(cartId), itemJson);
+        cache.addItemToList(cartId, cartItem);
     }
 
     @Override
     public void removeProduct(String cartId, String productId) {
-        Set<String> items = redis.smembers(generateCartRedisId(cartId));
-
-        items.forEach( jsonItem -> {
-            CartItem cartItem = null;
-            try{
-                cartItem = objectMapper.readValue(jsonItem, CartItem.class);
-
-                if(cartItem.getProductId() == Long.parseLong(productId) ){
-                    redis.srem(generateCartRedisId(cartId), jsonItem );
-                }
-            } catch (Exception e){
-                System.out.println(e.getMessage());
-            }
-        } );
+        Product product = new Product();
+        product.setId(Long.parseLong(productId));
+        cache.removeItemFromList(cartId, product);
     }
 
     @Override
     public void setProductQuantity(String cartId, String productId, int quantity){
-        redis.smembers(generateCartRedisId(cartId)).forEach( jsonItem -> {
-            CartItem cartItem = null;
-            try{
-                cartItem = objectMapper.readValue(jsonItem, CartItem.class);
 
+        List<CartItem> list = (List<CartItem>) cache.getItem(cartId, CartItem.class);
+
+        list.forEach( cartItem -> {
+            try{
                 if(cartItem.getProductId() == Long.parseLong(productId) ){
                     cartItem.setQuantity( quantity );
-                    String newJsonItem = objectMapper.writeValueAsString(cartItem);
-                    redis.srem(generateCartRedisId(cartId), jsonItem );
-                    redis.sadd(generateCartRedisId(cartId), newJsonItem);
+                    cache.removeItemFromList(cartId, cartItem);
+                    cache.addItemToList(cartId, cartItem);
                 }
             } catch (Exception e){
                 System.out.println(e.getMessage());
@@ -81,31 +61,35 @@ public class CartServiceImpl implements CartService{
     @Override
     public Set<CartItem> getItems(String cartId){
 
-        Set<CartItem> output = new HashSet<CartItem>();
+        return (Set) cache.getList(cartId, CartItem.class);
 
-        redis.smembers(generateCartRedisId(cartId)).forEach( cartItemJson -> {
-//            System.out.println("cartItemJson " + cartItemJson );
-            try{
-                CartItem item = objectMapper.readValue(cartItemJson, CartItem.class);
-                output.add(item);
-            } catch (Exception e){
-//                System.out.println( "GetItems() ERROR: " + e.getMessage() );
-                e.printStackTrace();
-            }
-        } );
-        return output;
+//        redis.smembers(generateCartRedisId(cartId)).forEach( cartItemJson -> {
+////            System.out.println("cartItemJson " + cartItemJson );
+//            try{
+//                CartItem item = objectMapper.readValue(cartItemJson, CartItem.class);
+//                output.add(item);
+//            } catch (Exception e){
+////                System.out.println( "GetItems() ERROR: " + e.getMessage() );
+//                e.printStackTrace();
+//            }
+//        } );
+//        return output;
     }
 
     @Override
     public void createOrder(String cartId) {
-        redis.smembers(generateCartRedisId(cartId)).forEach( cartItemJson -> {
+//        redis.smembers(generateCartRedisId(cartId)).forEach( cartItemJson -> {
+//
+//            CartItem cartItem = null;
+//            try{
+//                cartItem = objectMapper.readValue(cartItemJson, CartItem.class);
+//            } catch (Exception e){
+//                System.out.println(e.getMessage());
+//            }
 
-            CartItem cartItem = null;
-            try{
-                cartItem = objectMapper.readValue(cartItemJson, CartItem.class);
-            } catch (Exception e){
-                System.out.println(e.getMessage());
-            }
+        Set<CartItem> list = (Set) cache.getList(cartId, CartItem.class);
+
+        list.forEach(cartItem -> {
 
             if (cartItem != null) {
                 Product prod = ecommerceService.getProduct(cartItem.getProductId());

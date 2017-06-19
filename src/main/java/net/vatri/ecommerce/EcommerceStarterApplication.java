@@ -1,10 +1,15 @@
 package net.vatri.ecommerce;
 
+import net.vatri.ecommerce.cache.Cache;
+import net.vatri.ecommerce.cache.JacksonObjectMappper;
+import net.vatri.ecommerce.cache.ObjectMapper;
+import net.vatri.ecommerce.cache.RedisCache;
 import net.vatri.ecommerce.storage.StorageProperties;
 import net.vatri.ecommerce.storage.StorageService;
 import net.vatri.ecommerce.validators.GroupValidator;
 import net.vatri.ecommerce.validators.OrderValidator;
 import net.vatri.ecommerce.validators.ProductValidator;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
@@ -48,6 +53,17 @@ public class EcommerceStarterApplication{
     public Validator orderValidator(){
         return new OrderValidator();
     }
+
+    @Autowired
+    private Jedis jedis;
+
+    @Bean
+    public Cache cacheObject(){
+        ObjectMapper om = new JacksonObjectMappper( new com.fasterxml.jackson.databind.ObjectMapper() );
+        Cache cache = new RedisCache(om, jedis);
+        return cache;
+    }
+
 
     @Value("${redis.host}")
     private String redisHost;
