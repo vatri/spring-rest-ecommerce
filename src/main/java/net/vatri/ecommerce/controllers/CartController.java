@@ -1,5 +1,7 @@
-package net.vatri.ecommerce.cart;
+package net.vatri.ecommerce.controllers;
 
+import net.vatri.ecommerce.cart.CartItem;
+import net.vatri.ecommerce.cart.CartService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -26,7 +28,6 @@ public class CartController {
 
     @GetMapping("/{id}")
     public Set<CartItem> getCartItems(@PathVariable("id") String cartId){
-        System.out.println("getting cart items. Cart id:"+cartId);
         return cartService.getItems(cartId);
     }
 
