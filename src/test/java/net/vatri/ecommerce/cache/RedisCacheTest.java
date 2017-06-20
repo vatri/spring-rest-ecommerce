@@ -4,6 +4,7 @@ import io.jsonwebtoken.lang.Collections;
 import junit.framework.TestCase;
 import org.junit.Test;
 import org.mockito.Mock;
+import org.mockito.stubbing.Answer;
 import redis.clients.jedis.Jedis;
 
 import java.util.Arrays;
@@ -23,6 +24,7 @@ public class RedisCacheTest extends TestCase {
             this.id = id;
         }
     }
+
 
     public void setUp(){
         ObjectMapper om = mock(JacksonObjectMappper.class);
@@ -48,6 +50,40 @@ public class RedisCacheTest extends TestCase {
             }
         });
         assertTrue(true);
+    }
+
+    @Test
+    public void testGetItem(){
+        MockObject o = (MockObject) this.cache.getItem("item", MockObject.class);
+
+        assertTrue(o.id > 0);
+    }
+
+    @Test
+    public void testAddObjectToList(){
+        Collection<Object> list = this.cache.addItemToList("item", new MockObject(1));
+        assertEquals(2, list.size());// See the list in setUp()
+    }
+
+    @Test
+    public void testRemoveObjectFromList(){
+
+        Set<String> list = new HashSet<>();
+        list.add("{id:1}");
+
+        Jedis newJedis = mock(Jedis.class);
+        when(newJedis.smembers(anyString())).thenReturn(list);
+
+        cache.setJedis(newJedis);
+
+        Collection<Object> result = cache.removeItemFromList("item", new MockObject(1));
+        assertEquals(1, result.size());// See the list in setUp()
+    }
+
+    @Test
+    public void testAddingObjectToCache(){
+        MockObject res = (MockObject) cache.setItem("new_item", new MockObject(1));
+        assertEquals(1, res.id);
     }
 
 
