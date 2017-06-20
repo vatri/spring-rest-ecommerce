@@ -6,6 +6,7 @@ import net.vatri.ecommerce.services.EcommerceService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
@@ -56,7 +57,7 @@ public class CartServiceImpl implements CartService{
 
     @Override
     public Set<CartItem> getItems(String cartId){
-        return (Set) cache.getList(cartId, CartItem.class);
+        return new HashSet<CartItem>( (List) cache.getList(cartId, CartItem.class));
     }
 
     @Override
