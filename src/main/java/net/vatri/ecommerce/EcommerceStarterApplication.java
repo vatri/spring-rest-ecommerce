@@ -1,8 +1,7 @@
 package net.vatri.ecommerce;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import net.vatri.ecommerce.cache.Cache;
-import net.vatri.ecommerce.cache.JacksonObjectMappper;
-import net.vatri.ecommerce.cache.ObjectMapper;
 import net.vatri.ecommerce.cache.RedisCache;
 import net.vatri.ecommerce.storage.StorageProperties;
 import net.vatri.ecommerce.storage.StorageService;
@@ -56,9 +55,8 @@ public class EcommerceStarterApplication{
 
     @Bean
     @Autowired
-    public Cache cacheObject(Jedis jedis){
-        ObjectMapper om = new JacksonObjectMappper( new com.fasterxml.jackson.databind.ObjectMapper() );
-        Cache cache = new RedisCache(om, jedis);
+    public Cache cacheObject(Jedis jedis , ObjectMapper objectMapper){
+        Cache cache = new RedisCache(objectMapper, jedis);
         return cache;
     }
 

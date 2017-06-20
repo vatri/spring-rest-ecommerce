@@ -1,5 +1,6 @@
 package net.vatri.ecommerce.cache;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import junit.framework.TestCase;
 import org.junit.Test;
 import redis.clients.jedis.Jedis;
@@ -22,9 +23,9 @@ public class RedisCacheTest extends TestCase {
     }
 
 
-    public void setUp(){
-        ObjectMapper om = mock(JacksonObjectMappper.class);
-        when(om.readValue(anyString(),anyObject())).thenReturn(new MockObject(1));
+    public void setUp() throws Exception{
+        ObjectMapper om = mock(ObjectMapper.class);
+        when(om.readValue(anyString(), (Class<Object>) anyObject())).thenReturn(new MockObject(1));
         when(om.writeValueAsString(new MockObject(1) )).thenReturn("ok");
 
         Set<String> list = new HashSet<>();
