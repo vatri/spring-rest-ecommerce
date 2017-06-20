@@ -1,13 +1,9 @@
 package net.vatri.ecommerce.cache;
 
-import io.jsonwebtoken.lang.Collections;
 import junit.framework.TestCase;
 import org.junit.Test;
-import org.mockito.Mock;
-import org.mockito.stubbing.Answer;
 import redis.clients.jedis.Jedis;
 
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;

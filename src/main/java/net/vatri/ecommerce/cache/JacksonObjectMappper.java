@@ -1,7 +1,5 @@
 package net.vatri.ecommerce.cache;
 
-//import com.fasterxml.jackson.databind.ObjectMapper;
-
 public class JacksonObjectMappper implements ObjectMapper{
 
     private com.fasterxml.jackson.databind.ObjectMapper objectMapper;

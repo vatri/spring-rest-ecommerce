@@ -1,15 +1,11 @@
 package net.vatri.ecommerce.cart;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import net.vatri.ecommerce.cache.Cache;
-import net.vatri.ecommerce.models.OrderItem;
 import net.vatri.ecommerce.models.Product;
 import net.vatri.ecommerce.services.EcommerceService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import redis.clients.jedis.Jedis;
 
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
@@ -60,32 +56,11 @@ public class CartServiceImpl implements CartService{
 
     @Override
     public Set<CartItem> getItems(String cartId){
-
         return (Set) cache.getList(cartId, CartItem.class);
-
-//        redis.smembers(generateCartRedisId(cartId)).forEach( cartItemJson -> {
-////            System.out.println("cartItemJson " + cartItemJson );
-//            try{
-//                CartItem item = objectMapper.readValue(cartItemJson, CartItem.class);
-//                output.add(item);
-//            } catch (Exception e){
-////                System.out.println( "GetItems() ERROR: " + e.getMessage() );
-//                e.printStackTrace();
-//            }
-//        } );
-//        return output;
     }
 
     @Override
     public void createOrder(String cartId) {
-//        redis.smembers(generateCartRedisId(cartId)).forEach( cartItemJson -> {
-//
-//            CartItem cartItem = null;
-//            try{
-//                cartItem = objectMapper.readValue(cartItemJson, CartItem.class);
-//            } catch (Exception e){
-//                System.out.println(e.getMessage());
-//            }
 
         Set<CartItem> list = (Set) cache.getList(cartId, CartItem.class);
 

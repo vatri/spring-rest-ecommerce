@@ -54,11 +54,9 @@ public class EcommerceStarterApplication{
         return new OrderValidator();
     }
 
-    @Autowired
-    private Jedis jedis;
-
     @Bean
-    public Cache cacheObject(){
+    @Autowired
+    public Cache cacheObject(Jedis jedis){
         ObjectMapper om = new JacksonObjectMappper( new com.fasterxml.jackson.databind.ObjectMapper() );
         Cache cache = new RedisCache(om, jedis);
         return cache;
