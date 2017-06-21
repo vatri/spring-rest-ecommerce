@@ -31,8 +31,16 @@ All inputs and outputs use JSON format.
 /cart
   / POST - Create cart
   /{id} GET - Get items for card with ID = {id}
-  /{id} POST - {"productId" : [ID], "quantity": [QTY]}  - Add CartItem to cart with ID {id}
+    @Return: (List) All items in the cart
+  /{id} POST - Add CartItem to cart with ID {id}
+    @Param: CartItem(productId*, int quantity*)
+    @Return: (String) "OK"
   /{id}/{product_id} DELETE - Remove product with ID {product_id} from cart with ID {id}
-  /{id}/quantity POST - { "productId" :[ID] , "quantity" : [QTY]} - Update cart item, i.e. set product quantity
+    @Return: (String) "OK"
+  /{id}/quantity POST - Updates cart item, i.e. set product quantity
+    @Param: (JSON) CartItem(productId*, quantity*)
+    @Return: (String) "OK"
   /{id}/order - POST - Create order from cart
+    @Param: (JSON) Order(name*, OrderItem items*, address,city,zip,status,comment,totalPrice,type)
+    @Return: (String) "OK"
 ```

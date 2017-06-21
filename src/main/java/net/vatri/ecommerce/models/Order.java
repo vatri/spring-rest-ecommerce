@@ -1,10 +1,8 @@
 package net.vatri.ecommerce.models;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
-
 import javax.persistence.*;
-import java.util.Date;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -20,10 +18,10 @@ public class Order {
     private String totalPrice;
     private String type;
 
-    @Temporal(TemporalType.TIMESTAMP)
-    private String created;//Todo - Date type...
+//    @Temporal(TemporalType.TIMESTAMP) - causes bug when saving...
+    private String created;
 
-    private List<OrderItem> items;
+    private List<OrderItem> items = new ArrayList<OrderItem>();
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -117,11 +115,6 @@ public class Order {
 
     public void setItems(List<OrderItem> items) {
         this.items = items;
-    }
-
-    @PrePersist
-    protected void onCreate() {
-        created = new Date().toString();
     }
 
 }

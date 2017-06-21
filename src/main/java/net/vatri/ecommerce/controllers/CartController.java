@@ -2,15 +2,22 @@ package net.vatri.ecommerce.controllers;
 
 import net.vatri.ecommerce.cart.CartItem;
 import net.vatri.ecommerce.cart.CartService;
+import net.vatri.ecommerce.hateoas.OrderResource;
+import net.vatri.ecommerce.models.Order;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Required;
+import org.springframework.hateoas.Link;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.Set;
+
+import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
 
 
 @RestController
 @RequestMapping("/cart")
-public class CartController {
+public class CartController extends CoreController{
 
     @Autowired
     CartService cartService;
@@ -45,9 +52,25 @@ public class CartController {
     }
 
     @PostMapping("{id}/order")
-    public String createOrder(@PathVariable("id") String cartId){
-        cartService.createOrder(cartId);
-        return "OK";
+    public OrderResource createOrder(@PathVariable("id") String cartId, @RequestBody @Valid Order order){
+        if(order == null){
+            System.out.println("Order not in POST");
+            return null;
+        }
+        OrderResource orderResource = new OrderResource(
+            cartService.createOrder(cartId, order)
+        );
+
+        // HAL link:
+        Link link = linkTo(OrderController.class).slash(order.getId()).withSelfRel();
+        orderResource.add(link);
+
+        if(orderResource.id < 1){
+            System.out.println("Resource not created");
+            return null;
+        }
+        return orderResource;
+
     }
 
 }

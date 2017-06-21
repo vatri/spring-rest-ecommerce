@@ -1,16 +1,15 @@
 package net.vatri.ecommerce.cart;
 
 import net.vatri.ecommerce.cache.Cache;
+import net.vatri.ecommerce.models.GroupVariant;
+import net.vatri.ecommerce.models.Order;
 import net.vatri.ecommerce.models.OrderItem;
 import net.vatri.ecommerce.models.Product;
 import net.vatri.ecommerce.services.EcommerceService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 
 @Service
 public class CartServiceImpl implements CartService{
@@ -44,8 +43,7 @@ public class CartServiceImpl implements CartService{
     @Override
     public void setProductQuantity(String cartId, String productId, int quantity){
 
-        List<CartItem> list = (List<CartItem>) cache.getItem(cartId, CartItem.class);
-
+        List<CartItem> list = (List) cache.getList(cartId, CartItem.class);
         list.forEach( cartItem -> {
             try{
                 if(cartItem.getProductId() == Long.parseLong(productId) ){
@@ -65,24 +63,39 @@ public class CartServiceImpl implements CartService{
     }
 
     @Override
-    public void createOrder(String cartId) {
+    public Order createOrder(String cartId, Order order) {
+        List<CartItem> cartItems = (List)cache.getList(cartId, CartItem.class);
 
-        List<CartItem> list = (List)cache.getList(cartId, CartItem.class);
+        order = addCartItemsToOrders(cartItems, order);
+        if( order == null){
+            System.out.println("Order not set.");
+        }
+        return ecommerceService.saveOrder(order);
+    }
 
-        list.forEach(cartItem -> {
+    private Order addCartItemsToOrders(List<CartItem> cartItems, Order order){
 
-                Product prod = ecommerceService.getProduct(cartItem.getProductId());
-                int qty = cartItem.getQuantity();
-                long variantId = cartItem.getVariantId();
+        cartItems.forEach(cartItem -> {
 
-                    // Todo: create new Hibernate model (OrderItem) and add to list
-                    System.out.println("Adding " +
-                            "" + qty + " of " +
-                            "" + prod.getName() + " /" +
-                            " "+variantId+" to the cart");
+            Product prod = ecommerceService.getProduct(cartItem.getProductId());
+            int qty = cartItem.getQuantity() > 0 ? cartItem.getQuantity() : 1;
+            long variantId = cartItem.getVariantId();
 
+            for(int i = 0; i < qty; i++) {
+                OrderItem orderItem = new OrderItem();
+                orderItem.setProduct(prod);
+                if(variantId > 0) {
+                    GroupVariant v = new GroupVariant();
+                    v.setId(variantId);
+                    orderItem.setGroupVariant(v);
+                }
+                orderItem.setOrder(order);
+                order.getItems().add(orderItem);
+            }
 
         } );
+
+        return order;
     }
 
     private String generateCartRedisId(String cartId){
