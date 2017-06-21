@@ -74,7 +74,7 @@ public class RedisCacheTest extends TestCase {
         cache.setJedis(newJedis);
 
         Collection<Object> result = cache.removeItemFromList("item", new MockObject(1));
-        assertEquals(1, result.size());// See the list in setUp()
+        assertEquals(1, result.size()); // See above list 
     }
 
     @Test

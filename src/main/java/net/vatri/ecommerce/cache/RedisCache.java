@@ -56,12 +56,7 @@ public class RedisCache implements Cache{
 
     @Override
     public void removeItem(String key, Object item) {
-        try {
-            String jsonItem = objectMapper.writeValueAsString(item);
-            jedis.del(key);
-        } catch (Exception e){
-            System.out.println(e.getMessage());
-        }
+        jedis.del(key);
     }
 
     @Override
@@ -84,14 +79,17 @@ public class RedisCache implements Cache{
 
     @Override
     public Collection<Object> removeItemFromList(String key, Object item) {
+
         getListFromRedis(key, item.getClass()).forEach( row -> {
-            if(row == item){
+            if(row.equals(item)){
                 try {
-                    String jsonItem = objectMapper.writeValueAsString(item);
+                    String jsonItem = objectMapper.writeValueAsString(row);
                     jedis.srem(key, jsonItem);
                 } catch (Exception e){
                     System.out.println(e.getMessage());
                 }
+            } else {
+                System.out.println("Can't find object in Redis list.");
             }
         });
 
@@ -100,10 +98,10 @@ public class RedisCache implements Cache{
 
 
     private Collection<Object> getListFromRedis(String key, Class type){
-        Collection<Object> list = new ArrayList<Object>();
+        Collection<Object> list = new ArrayList<>();
         jedis.smembers(key).forEach(jsonItem -> {
             try {
-                list.add(objectMapper.readValue(jsonItem, Object.class));
+                list.add(objectMapper.readValue(jsonItem, type));
             } catch (Exception e){
                 e.getMessage();
             }

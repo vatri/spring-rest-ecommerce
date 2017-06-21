@@ -1,6 +1,7 @@
 package net.vatri.ecommerce.cart;
 
 import net.vatri.ecommerce.cache.Cache;
+import net.vatri.ecommerce.models.OrderItem;
 import net.vatri.ecommerce.models.Product;
 import net.vatri.ecommerce.services.EcommerceService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,9 +33,12 @@ public class CartServiceImpl implements CartService{
 
     @Override
     public void removeProduct(String cartId, String productId) {
-        Product product = new Product();
-        product.setId(Long.parseLong(productId));
-        cache.removeItemFromList(cartId, product);
+        CartItem itemToRemove = new CartItem();
+
+        // We use only product ID since it's the one being compared in CartItem.equals() method:
+        itemToRemove.setProductId(Long.parseLong(productId));
+
+        cache.removeItemFromList(cartId, itemToRemove);
     }
 
     @Override
@@ -63,19 +67,20 @@ public class CartServiceImpl implements CartService{
     @Override
     public void createOrder(String cartId) {
 
-        Set<CartItem> list = (Set) cache.getList(cartId, CartItem.class);
+        List<CartItem> list = (List)cache.getList(cartId, CartItem.class);
 
         list.forEach(cartItem -> {
 
-            if (cartItem != null) {
                 Product prod = ecommerceService.getProduct(cartItem.getProductId());
-                if(prod != null){
+                int qty = cartItem.getQuantity();
+                long variantId = cartItem.getVariantId();
 
                     // Todo: create new Hibernate model (OrderItem) and add to list
-                    System.out.println(prod.getName());
+                    System.out.println("Adding " +
+                            "" + qty + " of " +
+                            "" + prod.getName() + " /" +
+                            " "+variantId+" to the cart");
 
-                }
-            }
 
         } );
     }

@@ -9,17 +9,17 @@ import javax.persistence.*;
 @Table(name = "group_variants")
 public class GroupVariant {
 
-    private Integer id;
+    private long id;
     private String variantName;
     private ProductGroup group;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    public Integer getId() {
+    public long getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(long id) {
         this.id = id;
     }
 
