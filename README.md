@@ -1,6 +1,6 @@
 # Java Spring E-commerce
 
-E-commerce REST API based on Java Spring, Spring Boot, Spring HATEOAS, Hibernate ORM, JWT and Redis.
+E-commerce REST API based on Java Spring, Spring Boot, Spring HATEOAS, Hibernate ORM with MySQL, JWT and Redis.
 
 ## REST API Endpoints
 
