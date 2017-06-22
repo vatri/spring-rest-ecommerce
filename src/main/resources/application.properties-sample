@@ -21,4 +21,5 @@ jwt.secret = vianee2
 
 redis.host = [REDIS URL*]
 redis.port = [REDIS PORT*]
+redis.password = [REDIS PASS*]
 
