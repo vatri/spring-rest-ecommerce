@@ -6,7 +6,8 @@ import org.springframework.hateoas.ResourceSupport;
 
 public class ProductResource extends ResourceSupport {
 
-    @JsonProperty public long id;
+    @JsonProperty
+    public long id;
     public String name;
     public String price;
     public String description;

@@ -8,7 +8,8 @@ import org.springframework.hateoas.ResourceSupport;
 import java.util.List;
 
 public class GroupResource extends ResourceSupport{
-    @JsonProperty public long id;
+    @JsonProperty
+    public long id;
     public String groupName;
     public String price;
     public List<GroupVariant> variants;
