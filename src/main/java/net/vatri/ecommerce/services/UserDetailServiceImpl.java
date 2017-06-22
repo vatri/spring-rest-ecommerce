@@ -1,6 +1,7 @@
 package net.vatri.ecommerce.services;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import net.vatri.ecommerce.cache.Cache;
 import net.vatri.ecommerce.models.User;
 import net.vatri.ecommerce.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,17 +23,23 @@ public class UserDetailServiceImpl implements UserDetailsService {
     private UserRepository userRepository;
 
     @Autowired
-    private Jedis redis;
+    private Cache cache;
 
     @Autowired
     private ObjectMapper objectMapper;
 
     @Override
-    public UserDetails loadUserByUsername(String s) throws UsernameNotFoundException {
-        User user = userRepository.findByEmail(s);
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        User user = getUserFromCache(username);
+        if( user == null){
+            user = userRepository.findByEmail(username);
+            cache.setItem("user/"+username, user);
+        } else {
+            System.out.println("Getting user from cache...");
+        }
 
         if( user == null){
-            throw new UsernameNotFoundException("No user found. Username tried: " + s);
+            throw new UsernameNotFoundException("No user found. Username tried: " + username);
         }
         Set<GrantedAuthority> grantedAuthorities = new HashSet<GrantedAuthority>();
         grantedAuthorities.add(new SimpleGrantedAuthority("admin"));
@@ -40,18 +47,10 @@ public class UserDetailServiceImpl implements UserDetailsService {
         return new org.springframework.security.core.userdetails.User(user.getEmail(), user.getPassword(), grantedAuthorities);
     }
     /*
-    * Get user from Redis
+    * Get user from cache (Redis)
     * */
     private User getUserFromCache(String username){
-
-        String userJson = redis.get("user/"+username);
-        User user = null;
-        try{
-            user = objectMapper.readValue(userJson, User.class);
-        } catch (Exception e){
-            System.out.println(e.getMessage());
-        }
-
+        User user = (User) cache.getItem("user/"+username, User.class);
         return user;
     }
 }

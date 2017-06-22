@@ -53,24 +53,23 @@ public class EcommerceStarterApplication{
         return new OrderValidator();
     }
 
-    @Bean
-    @Autowired
-    public Cache cacheObject(Jedis jedis , ObjectMapper objectMapper){
-        Cache cache = new RedisCache(objectMapper, jedis);
-        return cache;
-    }
-
-
     @Value("${redis.host}")
     private String redisHost;
     @Value("${redis.port}")
     private int redisPort;
     @Value("${redis.password}")
     private String redisPassword;
-    @Bean
-    public Jedis redisCli(){
+//    @Bean
+    private Jedis redisCliFactory(){
         Jedis jedis = new Jedis(redisHost, redisPort);
         jedis.auth(redisPassword);
         return jedis;
     }
+
+    @Bean
+    @Autowired
+    public Cache cacheObject(ObjectMapper objectMapper){
+        return new RedisCache(objectMapper, redisCliFactory());
+    }
+
 }

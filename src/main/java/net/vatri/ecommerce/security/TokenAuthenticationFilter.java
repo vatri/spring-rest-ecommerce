@@ -11,20 +11,14 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
-import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 public class TokenAuthenticationFilter extends OncePerRequestFilter {
 
-    private final Log logger = LogFactory.getLog(this.getClass());
-
     @Value("${jwt.header}")
     private String AUTH_HEADER;
-
-//    @Value("${jwt.cookie}")
-//    private String AUTH_COOKIE;
 
     @Autowired
     TokenHelper tokenHelper;
@@ -33,11 +27,6 @@ public class TokenAuthenticationFilter extends OncePerRequestFilter {
     UserDetailsService userDetailServiceImpl;
 
     private String getToken( HttpServletRequest request ) {
-
-//        Cookie authCookie = getCookieValueByName( request, AUTH_COOKIE );
-//        if ( authCookie != null ) {
-//            return authCookie.getValue();
-//        }
 
         String authHeader = request.getHeader(AUTH_HEADER);
         if ( authHeader != null && authHeader.startsWith("Bearer ")) {
@@ -64,6 +53,7 @@ public class TokenAuthenticationFilter extends OncePerRequestFilter {
 
         String error = "";
         String authToken = getToken( request );
+
         if (authToken != null) {
 
             // Get username from token
