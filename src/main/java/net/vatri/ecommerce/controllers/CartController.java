@@ -5,11 +5,12 @@ import net.vatri.ecommerce.cart.CartService;
 import net.vatri.ecommerce.hateoas.OrderResource;
 import net.vatri.ecommerce.models.Order;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Required;
 import org.springframework.hateoas.Link;
+import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import org.springframework.validation.Validator;
 import java.util.Set;
 
 import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
@@ -21,6 +22,14 @@ public class CartController extends CoreController{
 
     @Autowired
     CartService cartService;
+
+    @Autowired
+    Validator orderValidator;
+
+    @InitBinder
+    protected void initBinder(WebDataBinder binder){
+        binder.addValidators(orderValidator);
+    }
 
     @PostMapping("/")
     public String create(){

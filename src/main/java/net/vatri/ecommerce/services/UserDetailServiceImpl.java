@@ -11,8 +11,6 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
-import redis.clients.jedis.Jedis;
-
 import java.util.HashSet;
 import java.util.Set;
 
@@ -30,27 +28,19 @@ public class UserDetailServiceImpl implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        User user = getUserFromCache(username);
+
+        User user = (User)cache.getItem("user/"+username, User.class);
         if( user == null){
             user = userRepository.findByEmail(username);
-            cache.setItem("user/"+username, user);
-        } else {
-            System.out.println("Getting user from cache...");
         }
-
         if( user == null){
             throw new UsernameNotFoundException("No user found. Username tried: " + username);
         }
+        cache.setItem("user/"+username, user);
+
         Set<GrantedAuthority> grantedAuthorities = new HashSet<GrantedAuthority>();
         grantedAuthorities.add(new SimpleGrantedAuthority("admin"));
 
         return new org.springframework.security.core.userdetails.User(user.getEmail(), user.getPassword(), grantedAuthorities);
-    }
-    /*
-    * Get user from cache (Redis)
-    * */
-    private User getUserFromCache(String username){
-        User user = (User) cache.getItem("user/"+username, User.class);
-        return user;
     }
 }

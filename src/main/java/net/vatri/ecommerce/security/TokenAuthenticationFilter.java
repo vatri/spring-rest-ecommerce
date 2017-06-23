@@ -1,7 +1,5 @@
 package net.vatri.ecommerce.security;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -36,17 +34,6 @@ public class TokenAuthenticationFilter extends OncePerRequestFilter {
         return null;
     }
 
-//    protected Cookie getCookieValueByName(HttpServletRequest request, String name) {
-//        if (request.getCookies() == null) {
-//            return null;
-//        }
-//        for (int i = 0; i < request.getCookies().length; i++) {
-//            if (request.getCookies()[i].getName().equals(name)) {
-//                return request.getCookies()[i];
-//            }
-//        }
-//        return null;
-//    }
 
     @Override
     public void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain) throws IOException, ServletException {

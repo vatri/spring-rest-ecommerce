@@ -55,7 +55,7 @@ public class RedisCache implements Cache{
     }
 
     @Override
-    public void removeItem(String key, Object item) {
+    public void removeItem(String key) {
         jedis.del(key);
     }
 

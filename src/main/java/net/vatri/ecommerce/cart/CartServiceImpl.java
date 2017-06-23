@@ -70,7 +70,11 @@ public class CartServiceImpl implements CartService{
         if( order == null){
             System.out.println("Order not set.");
         }
-        return ecommerceService.saveOrder(order);
+        order = ecommerceService.saveOrder(order);
+
+        cache.removeItem(cartId);
+
+        return order;
     }
 
     private Order addCartItemsToOrders(List<CartItem> cartItems, Order order){
