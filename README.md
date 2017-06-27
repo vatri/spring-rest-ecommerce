@@ -1,46 +1,42 @@
 # Java Spring E-commerce
 
-E-commerce REST API based on Java Spring, Spring Boot, Spring HATEOAS, Hibernate ORM with MySQL, JWT and Redis.
+E-commerce REST API based on Java Spring, Spring Boot, Hibernate ORM with MySQL, Spring HATEOAS, Spring Fox (Swagger API docs), JWT and Redis.
 
 ## REST API Endpoints
 
 All inputs and outputs use JSON format.
 
+**To open Swagger (interactive) API documentation, navigate your browser to [YOUR-URL]/swagger-ui.html**
+
+
 ```
 /product
-  / GET - List of products
-  / POST - Add product - required : String name , String groupId, String userId
-  /{id} GET - View product
-  /{id} POST - Update product
-  /{id}/images GET - View product images
-  /image/{id} GET - View image
-  /{id}/uploadimage POST - Upload product image
+  GET / - List of products
+  POST / - Add product - required : String name , String groupId, String userId
+  GET /{id} - View product
+  POST /{id} - Update product
+  GET /{id}/images - View product images
+  GET /image/{id}- View image
+  POST /{id}/uploadimage - Upload product image
 
 /group
-  / GET - List of groups
-  / POST - Add group
-  /{id} GET - View group
-  /{id} POST - Update group
+  GET / - List of groups
+  POST / - Add group
+  GET /{id} - View group
+  POST /{id} - Update group
 
 /order
-  / GET - List of orders
-  / POST - Add order
-  /{id} GET - View order
-  /{id} POST - Update order
+  GET / - List of orders
+  POST / - Add order
+  GET /{id} - View order
+  POST /{id} - Update order
 
 /cart
-  / POST - Create cart
-  /{id} GET - Get items for card with ID = {id}
-    @Return: (List) All items in the cart
-  /{id} POST - Add CartItem to cart with ID {id}
-    @Param: CartItem(productId*, int quantity*)
-    @Return: (String) "OK"
-  /{id}/{product_id} DELETE - Remove product with ID {product_id} from cart with ID {id}
-    @Return: (String) "OK"
-  /{id}/quantity POST - Updates cart item, i.e. set product quantity
-    @Param: (JSON) CartItem(productId*, quantity*)
-    @Return: (String) "OK"
-  /{id}/order - POST - Create order from cart
-    @Param: (JSON) Order(name*, OrderItem items*, address,city,zip,status,comment,totalPrice,type)
-    @Return: (String) "OK"
+  POST / - Create cart
+  GET /{id} - Get items for card with ID = {id}
+  POST /{id} - Add CartItem to cart with ID {id}
+  DELETE /{id}/{product_id} - Remove product with ID {product_id} from cart with ID {id}
+  POST /{id}/quantity - Updates cart item, i.e. set product quantity
+  POTS /{id}/order - Create order from cart
+
 ```
