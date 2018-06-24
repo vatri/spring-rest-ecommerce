@@ -10,6 +10,9 @@ All inputs and outputs use JSON format.
 
 
 ```
+/login
+  POST / - Login using username: b and password:b
+
 /product
   GET / - List of products
   POST / - Add product - required : String name , String groupId, String userId
