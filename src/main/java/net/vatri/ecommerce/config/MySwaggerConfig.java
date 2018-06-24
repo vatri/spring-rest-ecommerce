@@ -2,6 +2,7 @@ package net.vatri.ecommerce.config;
 
 import com.fasterxml.classmate.TypeResolver;
 import com.google.common.base.Predicate;
+import com.google.common.base.Predicates;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -86,7 +87,8 @@ public class MySwaggerConfig {
 
 //        apis.add(RequestHandlerSelectors.any().apply());
 
-        Predicate<RequestHandler> apis = RequestHandlerSelectors.any();
+//        Predicate<RequestHandler> apis = RequestHandlerSelectors.basePackage("net.vatri.ecommerce.controllers");// RequestHandlerSelectors.any();
+        Predicate apis = Predicates.not(RequestHandlerSelectors.basePackage("org.springframework.boot"));
         ///////////// 2017-06-28
 
         Docket docket = new Docket(DocumentationType.SWAGGER_2)
@@ -95,7 +97,7 @@ public class MySwaggerConfig {
 //                .apis(RequestHandlerSelectors.any())
                 .apis(apis)
 //                .paths(PathSelectors.any())
-                .paths(paths())
+//                .paths(paths())
                 .build();
 
         return docket;
